@@ -1,0 +1,685 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>HPP Produksi by GMCSTORE.ID</title>
+<meta name="description" content="Aplikasi Harga Pokok Produksi untuk industri fashion oleh GMCSTORE.ID"/>
+<meta name="theme-color" content="#1B5E8C"/>
+<meta name="mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-status-bar-style" content="default"/>
+<meta name="apple-mobile-web-app-title" content="HPP GMCSTORE"/>
+<link rel="manifest" href="manifest.json"/>
+<link rel="apple-touch-icon" href="icons/icon-192.png"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #F7F6F3;
+    --surface: #FFFFFF;
+    --surface2: #F2F1EE;
+    --border: #E4E2DC;
+    --border2: #CFCDC6;
+    --text: #1A1917;
+    --text2: #6B6862;
+    --text3: #9B9890;
+    --accent: #1B5E8C;
+    --accent-light: #E8F1F8;
+    --accent2: #0F6E56;
+    --accent2-light: #E6F4F0;
+    --warn: #8C4A1B;
+    --warn-light: #F8EFE8;
+    --red: #8C1B1B;
+    --radius: 10px;
+    --radius-sm: 6px;
+    --shadow: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+    --shadow-md: 0 4px 12px rgba(0,0,0,0.08), 0 2px 4px rgba(0,0,0,0.04);
+  }
+
+  body {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    font-size: 14px;
+    line-height: 1.6;
+    min-height: 100vh;
+  }
+
+  /* ── Layout ── */
+  .wrapper { max-width: 900px; margin: 0 auto; padding: 24px 20px 60px; }
+
+  /* ── Header ── */
+  .app-header {
+    display: flex; align-items: center; justify-content: space-between;
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 18px 24px; margin-bottom: 20px;
+    box-shadow: var(--shadow);
+  }
+  .app-title { font-size: 20px; font-weight: 700; letter-spacing: -0.4px; }
+  .app-sub { font-size: 13px; color: var(--text2); margin-top: 2px; }
+  .badge {
+    background: var(--accent-light); color: var(--accent);
+    font-size: 12px; font-weight: 600; padding: 4px 12px;
+    border-radius: 20px; border: 1px solid #B8D0E8;
+  }
+
+  /* ── Tabs ── */
+  .tabs {
+    display: flex; gap: 2px; background: var(--surface);
+    border: 1px solid var(--border); border-radius: var(--radius);
+    padding: 4px; margin-bottom: 20px; box-shadow: var(--shadow);
+  }
+  .tab {
+    flex: 1; padding: 9px 8px; border: none; background: transparent;
+    cursor: pointer; font-family: inherit; font-size: 13px; font-weight: 500;
+    color: var(--text2); border-radius: 7px; display: flex;
+    align-items: center; justify-content: center; gap: 6px; transition: all .18s;
+  }
+  .tab:hover { background: var(--surface2); color: var(--text); }
+  .tab.active { background: var(--accent); color: #fff; box-shadow: var(--shadow); }
+  .tab svg { width: 15px; height: 15px; flex-shrink: 0; }
+
+  /* ── Pages ── */
+  .page { display: none; }
+  .page.active { display: block; }
+
+  /* ── Card / Section ── */
+  .card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 20px 22px; margin-bottom: 16px;
+    box-shadow: var(--shadow);
+  }
+  .card-title {
+    font-size: 13px; font-weight: 600; color: var(--text2);
+    text-transform: uppercase; letter-spacing: 0.6px;
+    margin-bottom: 16px; display: flex; align-items: center; gap: 8px;
+  }
+  .card-title svg { width: 15px; height: 15px; color: var(--accent); }
+
+  /* ── Grids ── */
+  .g2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .g3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
+
+  /* ── Fields ── */
+  .field { display: flex; flex-direction: column; gap: 5px; }
+  .field label { font-size: 12px; font-weight: 500; color: var(--text2); }
+  input[type="text"], input[type="number"], select {
+    padding: 9px 11px; border: 1px solid var(--border2);
+    border-radius: var(--radius-sm); background: var(--surface);
+    color: var(--text); font-family: inherit; font-size: 13px;
+    width: 100%; transition: border-color .15s, box-shadow .15s;
+    outline: none;
+  }
+  input:focus, select:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(27,94,140,0.1);
+  }
+  select { cursor: pointer; }
+
+  /* ── Row table for bahan ── */
+  .row-header {
+    display: grid; gap: 8px; margin-bottom: 6px; padding: 0 4px;
+  }
+  .row-header span { font-size: 11px; color: var(--text3); font-weight: 500; text-transform: uppercase; letter-spacing: 0.4px; }
+  .bahan-row { display: grid; gap: 8px; align-items: start; margin-bottom: 8px; }
+  .bahan-bb { grid-template-columns: 1.8fr 100px 70px 64px 60px 110px 90px 34px; }
+  .bahan-4  { grid-template-columns: 2fr 80px 80px 120px 34px; }
+  .tkl-row  { grid-template-columns: 2fr 160px 34px; }
+
+  /* qty+satuan inline group */
+  .qty-group { display: flex; gap: 4px; align-items: center; }
+  .qty-group input[type="number"] { flex: 1; min-width: 0; }
+  .qty-group select { width: 72px; flex-shrink: 0; padding: 9px 4px; }
+
+  /* sub-label below input */
+  .cell-wrap { display: flex; flex-direction: column; gap: 3px; }
+  .cell-sub  { font-size: 10px; color: var(--text3); padding-left: 2px; white-space: nowrap; }
+  .cell-sub.computed { color: var(--accent); font-weight: 600; }
+
+  /* waste badge */
+  .waste-pill {
+    display: inline-flex; align-items: center; gap: 3px;
+    font-size: 10px; font-weight: 600; padding: 2px 6px;
+    border-radius: 10px; background: #FEF3C7; color: #92400E;
+    border: 1px solid #FCD34D; white-space: nowrap;
+  }
+
+  .btn-del {
+    width: 34px; height: 34px; border: 1px solid var(--border2);
+    border-radius: var(--radius-sm); background: transparent; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    color: var(--text2); transition: all .15s; flex-shrink: 0;
+  }
+  .btn-del:hover { background: #FEE2E2; border-color: #FCA5A5; color: var(--red); }
+  .btn-del svg { width: 14px; height: 14px; }
+
+  .btn-add {
+    display: flex; align-items: center; gap: 6px;
+    padding: 8px 14px; border: 1px dashed var(--border2);
+    border-radius: var(--radius-sm); background: transparent;
+    cursor: pointer; font-family: inherit; font-size: 13px;
+    color: var(--text2); width: 100%; justify-content: center;
+    transition: all .15s; margin-top: 6px;
+  }
+  .btn-add:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-light); }
+  .btn-add svg { width: 14px; height: 14px; }
+
+  /* ── CTA Button ── */
+  .btn-primary {
+    width: 100%; padding: 12px; border: none;
+    background: var(--accent); color: #fff;
+    font-family: inherit; font-size: 14px; font-weight: 600;
+    border-radius: var(--radius-sm); cursor: pointer;
+    margin-top: 8px; display: flex; align-items: center;
+    justify-content: center; gap: 8px; transition: background .15s;
+  }
+  .btn-primary:hover { background: #154F78; }
+  .btn-primary svg { width: 16px; height: 16px; }
+
+  /* ── Metrics ── */
+  .metrics { display: grid; grid-template-columns: repeat(4,1fr); gap: 12px; margin-bottom: 16px; }
+  .metric {
+    background: var(--surface2); border-radius: var(--radius);
+    padding: 14px 16px; border: 1px solid var(--border);
+  }
+  .metric-label { font-size: 11px; color: var(--text3); font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px; }
+  .metric-value { font-size: 18px; font-weight: 700; letter-spacing: -0.5px; color: var(--text); }
+  .metric-value.blue { color: var(--accent); }
+
+  /* ── Result Table ── */
+  .rtable { width: 100%; border-collapse: collapse; font-size: 13px; }
+  .rtable th { padding: 8px 10px; text-align: left; font-size: 11px; font-weight: 600; color: var(--text3); text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 1px solid var(--border); }
+  .rtable th:last-child { text-align: right; }
+  .rtable td { padding: 7px 10px; border-bottom: 1px solid var(--border); vertical-align: middle; }
+  .rtable td:last-child, .rtable td:nth-child(2), .rtable td:nth-child(3) { text-align: right; }
+  .rtable tr.group-head td { font-weight: 600; font-size: 12px; color: var(--text2); padding-top: 14px; background: var(--surface2); }
+  .rtable tr.indent td:first-child { padding-left: 22px; color: var(--text2); }
+  .rtable tr.total-row td { font-weight: 700; font-size: 14px; border-top: 2px solid var(--border2); border-bottom: none; padding-top: 12px; }
+  .rtable tr.total-row td:nth-child(3) { color: var(--accent); font-size: 16px; }
+
+  /* ── Bar chart ── */
+  .bar-chart { margin-top: 6px; }
+  .bar-item { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; font-size: 13px; }
+  .bar-label { width: 150px; color: var(--text2); flex-shrink: 0; text-align: right; font-size: 12px; }
+  .bar-track { flex: 1; height: 22px; background: var(--surface2); border-radius: 4px; overflow: hidden; border: 1px solid var(--border); }
+  .bar-fill { height: 100%; display: flex; align-items: center; padding: 0 8px; font-size: 11px; font-weight: 600; color: #fff; border-radius: 3px; transition: width .4s; min-width: 4px; }
+  .bar-val { width: 90px; text-align: right; font-weight: 600; font-size: 12px; }
+
+  /* ── Harga Jual ── */
+  .hj-table { width: 100%; }
+  .hj-row { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid var(--border); font-size: 13px; }
+  .hj-row:last-child { border-bottom: none; }
+  .hj-row.final { font-weight: 700; font-size: 16px; padding-top: 12px; margin-top: 4px; border-top: 2px solid var(--border2); border-bottom: none; }
+  .hj-row.final .hj-val { color: var(--accent); font-size: 20px; }
+  .hj-val { font-weight: 600; }
+  .hj-green { color: var(--accent2); }
+  .bep-box {
+    margin-top: 14px; padding: 12px 16px; background: var(--surface2);
+    border-radius: var(--radius-sm); border: 1px solid var(--border);
+    display: flex; gap: 32px; font-size: 13px;
+  }
+  .bep-item { display: flex; flex-direction: column; gap: 2px; }
+  .bep-label { font-size: 11px; color: var(--text3); font-weight: 600; text-transform: uppercase; letter-spacing: 0.4px; }
+  .bep-val { font-weight: 700; font-size: 15px; color: var(--text); }
+
+  /* ── Divider ── */
+  .divider { height: 1px; background: var(--border); margin: 14px 0; }
+
+  /* ── Row space ── */
+  .row-space { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
+  .row-space .card-title { margin-bottom: 0; }
+  .row-space .btn-add { width: auto; padding: 6px 12px; margin: 0; }
+
+  /* ── Pct pill ── */
+  .pct { font-size: 11px; color: var(--text3); background: var(--surface2); padding: 2px 6px; border-radius: 10px; }
+
+  @media(max-width:640px){
+    .metrics { grid-template-columns: 1fr 1fr; }
+    .g3 { grid-template-columns: 1fr 1fr; }
+    .bahan-4 { grid-template-columns: 1fr 1fr; }
+    .bahan-4 > *:nth-child(5) { grid-column: span 2; }
+  }
+</style>
+</head>
+<body>
+<div class="wrapper">
+
+  <!-- Header -->
+  <div class="app-header">
+    <div>
+      <div class="app-title">HPP Produksi by <span style="color:#38BDF8;">GMCSTORE.ID</span></div>
+      <div class="app-sub">Harga Pokok Produksi per item — Sistem Kalkulasi Biaya</div>
+    </div>
+    <div id="produk-badge" class="badge">Produk Baru</div>
+  </div>
+
+  <!-- Tabs -->
+  <div class="tabs">
+    <button class="tab active" onclick="switchTab('input')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/><path d="M9 12h6M9 16h4"/></svg>
+      Input Data
+    </button>
+    <button class="tab" onclick="switchTab('result')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="2" width="16" height="20" rx="2"/><path d="M8 10h8M8 14h5"/><path d="M15 18l2 2 4-4"/></svg>
+      Hasil HPP
+    </button>
+    <button class="tab" onclick="switchTab('harga')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a10 10 0 100 20A10 10 0 0012 2z"/><path d="M12 6v2m0 8v2M9.17 9.17A4 4 0 0115 15M15 9a4 4 0 01-5.83 5.83"/></svg>
+      Harga Jual
+    </button>
+  </div>
+
+  <!-- ===== INPUT PAGE ===== -->
+  <div id="page-input" class="page active">
+
+    <div class="card">
+      <div class="card-title">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.38 3.46L16 2a4 4 0 01-8 0L3.62 3.46a2 2 0 00-1.34 2.23l.58 3.57a1 1 0 00.99.84H6v10c0 1.1.9 2 2 2h8a2 2 0 002-2V10h2.15a1 1 0 00.99-.84l.58-3.57a2 2 0 00-1.34-2.23z"/></svg>
+        Informasi Produk
+      </div>
+      <div class="g3">
+        <div class="field">
+          <label>Nama Produk</label>
+          <input type="text" id="nama-produk" placeholder="cth: Kemeja Oxford" oninput="updateBadge()"/>
+        </div>
+        <div class="field">
+          <label>Kategori</label>
+          <select id="kategori">
+            <option>Atasan</option><option>Bawahan</option><option>Outerwear</option>
+            <option>Dress</option><option>Aksesoris</option><option>Sepatu</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Jumlah Produksi (pcs)</label>
+          <input type="number" id="qty" value="100" min="1" oninput="calc()"/>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="row-space">
+        <div class="card-title" style="margin:0">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+          Bahan Baku Langsung
+        </div>
+        <button class="btn-add" onclick="addBahan()" style="width:auto;padding:6px 12px;margin:0">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
+          Tambah Bahan
+        </button>
+      </div>
+      <div class="row-header bahan-bb" style="margin-top:10px">
+        <span>Nama Bahan</span>
+        <span>Kebutuhan / pcs</span>
+        <span>Satuan</span>
+        <span>Waste %</span>
+        <span>Efektif</span>
+        <span>Harga / Satuan (Rp)</span>
+        <span>Biaya / pcs (Rp)</span>
+        <span></span>
+      </div>
+      <div id="bahan-list"></div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M4.22 4.22l2.12 2.12M17.66 17.66l2.12 2.12M2 12h3M19 12h3M4.22 19.78l2.12-2.12M17.66 6.34l2.12-2.12"/></svg>
+        Bahan Pembantu &amp; Aksesoris
+      </div>
+      <div class="row-header bahan-4">
+        <span>Nama Bahan</span><span>Satuan</span><span>Qty/pcs</span><span>Harga/satuan (Rp)</span><span></span>
+      </div>
+      <div id="pembantu-list"></div>
+      <button class="btn-add" onclick="addPembantu()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
+        Tambah Bahan Pembantu
+      </button>
+    </div>
+
+    <div class="card">
+      <div class="card-title">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
+        Tenaga Kerja Langsung
+      </div>
+      <div class="row-header tkl-row">
+        <span>Proses / Pekerjaan</span><span>Upah per pcs (Rp)</span><span></span>
+      </div>
+      <div id="tkl-list"></div>
+      <button class="btn-add" onclick="addTKL()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
+        Tambah Proses
+      </button>
+    </div>
+
+    <div class="card">
+      <div class="card-title">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v16"/></svg>
+        Biaya Overhead Pabrik
+      </div>
+      <div class="g2" style="margin-bottom:12px">
+        <div class="field"><label>Biaya Listrik &amp; Utilitas (Rp/bulan)</label><input type="number" id="listrik" value="2000000" oninput="calc()"/></div>
+        <div class="field"><label>Sewa Tempat (Rp/bulan)</label><input type="number" id="sewa" value="5000000" oninput="calc()"/></div>
+        <div class="field"><label>Depresiasi Mesin (Rp/bulan)</label><input type="number" id="depresiasi" value="1500000" oninput="calc()"/></div>
+        <div class="field"><label>Lain-lain Overhead (Rp/bulan)</label><input type="number" id="overhead-lain" value="500000" oninput="calc()"/></div>
+      </div>
+      <div class="field" style="max-width:260px">
+        <label>Kapasitas Produksi per Bulan (pcs)</label>
+        <input type="number" id="kapasitas" value="500" min="1" oninput="calc()"/>
+      </div>
+    </div>
+
+    <button class="btn-primary" onclick="switchTab('result')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>
+      Hitung HPP Sekarang
+    </button>
+  </div>
+
+  <!-- ===== RESULT PAGE ===== -->
+  <div id="page-result" class="page">
+
+    <div class="metrics">
+      <div class="metric">
+        <div class="metric-label">HPP per Pcs</div>
+        <div class="metric-value blue" id="res-hpp">Rp0</div>
+      </div>
+      <div class="metric">
+        <div class="metric-label">Bahan Baku/pcs</div>
+        <div class="metric-value" id="res-bb">Rp0</div>
+      </div>
+      <div class="metric">
+        <div class="metric-label">TKL per Pcs</div>
+        <div class="metric-value" id="res-tkl">Rp0</div>
+      </div>
+      <div class="metric">
+        <div class="metric-label">Overhead/pcs</div>
+        <div class="metric-value" id="res-oh">Rp0</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6M16 13H8M16 17H8M10 9H8"/></svg>
+        Rincian HPP Lengkap
+      </div>
+      <table class="rtable">
+        <thead>
+          <tr><th>Komponen Biaya</th><th>Total Batch</th><th>per Pcs</th><th>Porsi</th></tr>
+        </thead>
+        <tbody id="result-rows"></tbody>
+      </table>
+    </div>
+
+    <div class="card">
+      <div class="card-title">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+        Komposisi Biaya
+      </div>
+      <div class="bar-chart" id="bar-chart"></div>
+    </div>
+  </div>
+
+  <!-- ===== HARGA JUAL PAGE ===== -->
+  <div id="page-harga" class="page">
+
+    <div class="card">
+      <div class="card-title">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
+        Parameter Harga Jual
+      </div>
+      <div class="g2">
+        <div class="field"><label>Margin Keuntungan (%)</label><input type="number" id="margin" value="40" min="0" oninput="calcHarga()"/></div>
+        <div class="field"><label>Biaya Pemasaran (%)</label><input type="number" id="marketing" value="10" min="0" oninput="calcHarga()"/></div>
+        <div class="field"><label>Biaya Distribusi (%)</label><input type="number" id="distribusi" value="5" min="0" oninput="calcHarga()"/></div>
+        <div class="field"><label>Pajak / PPN (%)</label><input type="number" id="ppn" value="11" min="0" oninput="calcHarga()"/></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 7H4a2 2 0 00-2 2v6a2 2 0 002 2h16a2 2 0 002-2V9a2 2 0 00-2-2z"/><path d="M12 12h.01"/><path d="M2 10h2M20 10h2M2 14h2M20 14h2"/></svg>
+        Simulasi Harga Jual
+      </div>
+      <div id="hj-detail"></div>
+      <div class="bep-box" id="bep-box">
+        <div class="bep-item"><div class="bep-label">BEP Quantity</div><div class="bep-val" id="bep-qty">—</div></div>
+        <div class="bep-item"><div class="bep-label">BEP Revenue</div><div class="bep-val" id="bep-rev">—</div></div>
+        <div class="bep-item"><div class="bep-label">Gross Margin</div><div class="bep-val" id="bep-gm">—</div></div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+let bahanData=[
+  {nama:'Kain Utama (Katun)',satuan:'meter',qty:1.7,waste:5,harga:45000},
+  {nama:'Kain Furing',satuan:'meter',qty:0.3,waste:5,harga:22000},
+  {nama:'Benang Jahit',satuan:'gulung',qty:0.5,waste:0,harga:8000},
+  {nama:'',satuan:'meter',qty:'',waste:0,harga:''},
+  {nama:'',satuan:'meter',qty:'',waste:0,harga:''}
+];
+let pembantuData=[{nama:'Kancing',satuan:'pcs',qty:6,harga:500},{nama:'Label merek',satuan:'pcs',qty:1,harga:1500}];
+let tklData=[{proses:'Pemotongan',upah:8000},{proses:'Jahit',upah:25000},{proses:'Finishing',upah:5000}];
+let lastHpp=0;
+
+function fmt(n){return'Rp'+Math.round(n).toLocaleString('id-ID');}
+function num(id){return parseFloat(document.getElementById(id).value)||0;}
+
+function updateBadge(){
+  const v=document.getElementById('nama-produk').value.trim();
+  document.getElementById('produk-badge').textContent=v||'Produk Baru';
+}
+
+function switchTab(t){
+  document.querySelectorAll('.tab').forEach((b,i)=>{
+    b.classList.toggle('active',['input','result','harga'][i]===t);
+  });
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById('page-'+t).classList.add('active');
+  if(t==='result')calc();
+  if(t==='harga'){calc();calcHarga();}
+}
+
+function delIcon(){return`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>`;}
+
+function satuanOpts(sel){
+  const opts=['meter','yard','cm','gulung','lembar','pcs','kg','gram','liter','ml','roll','lusin','set'];
+  return opts.map(o=>`<option${o===sel?' selected':''}>${o}</option>`).join('');
+}
+
+function renderBahan(){
+  document.getElementById('bahan-list').innerHTML=bahanData.map((b,i)=>{
+    const qty=parseFloat(b.qty)||0;
+    const waste=parseFloat(b.waste)||0;
+    const efektif=qty*(1+waste/100);
+    const harga=parseFloat(b.harga)||0;
+    const biayaPcs=efektif*harga;
+    const showEfektif=qty>0&&waste>0;
+    return`<div class="bahan-row bahan-bb" id="brow-${i}">
+      <div class="cell-wrap">
+        <input type="text" value="${b.nama}" placeholder="cth: Kain Katun Oxford"
+          onchange="bahanData[${i}].nama=this.value;calc()"/>
+      </div>
+      <div class="cell-wrap">
+        <input type="number" value="${b.qty===''?'':b.qty}" placeholder="cth: 1.7" step="0.01" min="0"
+          onchange="bahanData[${i}].qty=this.value===''?'':parseFloat(this.value)||0;renderBahan();calc()"/>
+      </div>
+      <div class="cell-wrap">
+        <select onchange="bahanData[${i}].satuan=this.value">${satuanOpts(b.satuan)}</select>
+      </div>
+      <div class="cell-wrap">
+        <input type="number" value="${b.waste}" placeholder="0" step="1" min="0" max="99"
+          style="text-align:center"
+          onchange="bahanData[${i}].waste=parseFloat(this.value)||0;renderBahan();calc()"/>
+      </div>
+      <div class="cell-wrap" style="justify-content:center;align-items:center;display:flex;flex-direction:column;gap:2px">
+        ${showEfektif
+          ? `<span style="font-size:12px;font-weight:700;color:var(--accent)">${efektif.toFixed(2)}</span>
+             <span class="cell-sub" style="color:#92400E">+${waste}% susut</span>`
+          : `<span style="font-size:12px;color:var(--text3)">${qty>0?qty.toFixed(2):'—'}</span>`
+        }
+      </div>
+      <div class="cell-wrap">
+        <input type="number" value="${b.harga===''?'':b.harga}" placeholder="cth: 45000" min="0"
+          onchange="bahanData[${i}].harga=this.value===''?'':parseFloat(this.value)||0;renderBahan();calc()"/>
+      </div>
+      <div class="cell-wrap" style="justify-content:center;align-items:flex-end;display:flex;flex-direction:column;gap:2px">
+        ${biayaPcs>0
+          ? `<span style="font-size:13px;font-weight:700;color:var(--accent2)">${fmt(biayaPcs)}</span>`
+          : `<span style="font-size:12px;color:var(--text3)">—</span>`
+        }
+      </div>
+      <button class="btn-del" onclick="bahanData.splice(${i},1);renderBahan();calc()">${delIcon()}</button>
+    </div>`;
+  }).join('');
+}
+
+function renderPembantu(){
+  document.getElementById('pembantu-list').innerHTML=pembantuData.map((b,i)=>`
+  <div class="bahan-row bahan-4">
+    <input type="text" value="${b.nama}" placeholder="Nama bahan" onchange="pembantuData[${i}].nama=this.value;calc()"/>
+    <input type="text" value="${b.satuan}" placeholder="pcs" onchange="pembantuData[${i}].satuan=this.value"/>
+    <input type="number" value="${b.qty}" step="0.1" min="0" onchange="pembantuData[${i}].qty=parseFloat(this.value)||0;calc()"/>
+    <input type="number" value="${b.harga}" min="0" onchange="pembantuData[${i}].harga=parseFloat(this.value)||0;calc()"/>
+    <button class="btn-del" onclick="pembantuData.splice(${i},1);renderPembantu();calc()">${delIcon()}</button>
+  </div>`).join('');
+}
+
+function renderTKL(){
+  document.getElementById('tkl-list').innerHTML=tklData.map((t,i)=>`
+  <div class="bahan-row tkl-row">
+    <input type="text" value="${t.proses}" placeholder="cth: Jahit, Sablon" onchange="tklData[${i}].proses=this.value;calc()"/>
+    <input type="number" value="${t.upah}" min="0" onchange="tklData[${i}].upah=parseFloat(this.value)||0;calc()"/>
+    <button class="btn-del" onclick="tklData.splice(${i},1);renderTKL();calc()">${delIcon()}</button>
+  </div>`).join('');
+}
+
+function addBahan(){bahanData.push({nama:'',satuan:'meter',qty:'',waste:0,harga:''});renderBahan();}
+function addPembantu(){pembantuData.push({nama:'',satuan:'pcs',qty:1,harga:0});renderPembantu();}
+function addTKL(){tklData.push({proses:'',upah:0});renderTKL();}
+
+function calc(){
+  const qty=num('qty')||1;
+  const bbPerPcs=bahanData.reduce((s,b)=>{
+    const q=parseFloat(b.qty)||0;
+    const w=parseFloat(b.waste)||0;
+    const h=parseFloat(b.harga)||0;
+    return s+(q*(1+w/100))*h;
+  },0);
+  const pemPerPcs=pembantuData.reduce((s,b)=>s+(parseFloat(b.qty)||0)*(parseFloat(b.harga)||0),0);
+  const totalBB=(bbPerPcs+pemPerPcs)*qty;
+  const tklPerPcs=tklData.reduce((s,t)=>s+t.upah,0);
+  const totalTKL=tklPerPcs*qty;
+  const kap=num('kapasitas')||1;
+  const ohBln=num('listrik')+num('sewa')+num('depresiasi')+num('overhead-lain');
+  const ohPerPcs=ohBln/kap;
+  const totalOH=ohPerPcs*qty;
+  const totalHPP=totalBB+totalTKL+totalOH;
+  const hppPerPcs=totalHPP/qty;
+  lastHpp=hppPerPcs;
+
+  document.getElementById('res-hpp').textContent=fmt(hppPerPcs);
+  document.getElementById('res-bb').textContent=fmt(bbPerPcs+pemPerPcs);
+  document.getElementById('res-tkl').textContent=fmt(tklPerPcs);
+  document.getElementById('res-oh').textContent=fmt(ohPerPcs);
+
+  const pct=v=>totalHPP>0?`<span class="pct">${(v/totalHPP*100).toFixed(1)}%</span>`:'—';
+
+  let rows=`<tr class="group-head"><td colspan="4">1. Bahan Baku Langsung</td></tr>`;
+  bahanData.forEach(b=>{
+    const q=parseFloat(b.qty)||0;
+    const w=parseFloat(b.waste)||0;
+    const h=parseFloat(b.harga)||0;
+    const efektif=q*(1+w/100);
+    const biaya=efektif*h;
+    const wasteLabel=w>0?` <span style="font-size:10px;background:#FEF3C7;color:#92400E;padding:1px 5px;border-radius:8px;border:1px solid #FCD34D">+${w}% susut</span>`:'';
+    rows+=`<tr class="indent"><td>${b.nama||'—'}${wasteLabel}</td><td>${fmt(biaya*qty)}</td><td>${fmt(biaya)}</td><td>${pct(biaya*qty)}</td></tr>`;
+  });
+
+  rows+=`<tr class="group-head"><td colspan="4">2. Bahan Pembantu &amp; Aksesoris</td></tr>`;
+  pembantuData.forEach(b=>{
+    rows+=`<tr class="indent"><td>${b.nama||'—'}</td><td>${fmt(b.qty*b.harga*qty)}</td><td>${fmt(b.qty*b.harga)}</td><td>${pct(b.qty*b.harga*qty)}</td></tr>`;
+  });
+
+  rows+=`<tr class="group-head"><td colspan="4">3. Tenaga Kerja Langsung</td></tr>`;
+  tklData.forEach(t=>{
+    rows+=`<tr class="indent"><td>${t.proses||'—'}</td><td>${fmt(t.upah*qty)}</td><td>${fmt(t.upah)}</td><td>${pct(t.upah*qty)}</td></tr>`;
+  });
+
+  rows+=`<tr class="group-head"><td colspan="4">4. Overhead Pabrik</td></tr>`;
+  [['Listrik & Utilitas','listrik'],['Sewa Tempat','sewa'],['Depresiasi Mesin','depresiasi'],['Lain-lain','overhead-lain']].forEach(([lbl,id])=>{
+    const v=num(id)/kap;
+    rows+=`<tr class="indent"><td>${lbl}</td><td>${fmt(v*qty)}</td><td>${fmt(v)}</td><td>${pct(v*qty)}</td></tr>`;
+  });
+
+  rows+=`<tr class="total-row"><td>Total HPP</td><td>${fmt(totalHPP)}</td><td>${fmt(hppPerPcs)}</td><td>100%</td></tr>`;
+  document.getElementById('result-rows').innerHTML=rows;
+
+  const colors=['#1B5E8C','#0F6E56','#8C4A1B'];
+  const labels=['Bahan Baku (BB+Pembantu)','Tenaga Kerja Langsung','Overhead Pabrik'];
+  const vals=[totalBB,totalTKL,totalOH];
+  const grand=vals.reduce((a,b)=>a+b,0);
+  document.getElementById('bar-chart').innerHTML=vals.map((v,i)=>{
+    const w=grand>0?(v/grand*100).toFixed(1):0;
+    return`<div class="bar-item">
+      <div class="bar-label">${labels[i]}</div>
+      <div class="bar-track">
+        <div class="bar-fill" style="width:${w}%;background:${colors[i]}">${w>8?w+'%':''}</div>
+      </div>
+      <div class="bar-val">${fmt(v/qty)}</div>
+    </div>`;
+  }).join('');
+}
+
+function calcHarga(){
+  const hpp=lastHpp;
+  if(!hpp){
+    document.getElementById('hj-detail').innerHTML='<p style="color:#9B9890;font-size:13px;padding:8px 0">Isi data input terlebih dahulu lalu klik tab Hasil HPP.</p>';
+    return;
+  }
+  const margin=num('margin')/100;
+  const mkt=num('marketing')/100;
+  const dist=num('distribusi')/100;
+  const ppn=num('ppn')/100;
+  const mktNom=hpp*mkt;
+  const distNom=hpp*dist;
+  const subtotal=hpp+mktNom+distNom;
+  const profit=hpp*margin;
+  const sbPajak=subtotal+profit;
+  const pajakNom=sbPajak*ppn;
+  const hargaAkhir=sbPajak+pajakNom;
+  const gm=(profit/hargaAkhir*100).toFixed(1);
+
+  document.getElementById('hj-detail').innerHTML=`
+    <div class="hj-row"><span>HPP per pcs</span><span class="hj-val">${fmt(hpp)}</span></div>
+    <div class="hj-row"><span>Biaya Pemasaran (${num('marketing')}%)</span><span class="hj-val">${fmt(mktNom)}</span></div>
+    <div class="hj-row"><span>Biaya Distribusi (${num('distribusi')}%)</span><span class="hj-val">${fmt(distNom)}</span></div>
+    <div class="hj-row" style="font-weight:600"><span>Subtotal Biaya</span><span class="hj-val">${fmt(subtotal)}</span></div>
+    <div class="hj-row"><span>Margin Keuntungan (${num('margin')}%)</span><span class="hj-val hj-green">+ ${fmt(profit)}</span></div>
+    <div class="hj-row"><span>Harga Sebelum Pajak</span><span class="hj-val">${fmt(sbPajak)}</span></div>
+    <div class="hj-row"><span>PPN (${num('ppn')}%)</span><span class="hj-val">${fmt(pajakNom)}</span></div>
+    <div class="hj-row final"><span>Harga Jual ke Konsumen</span><span class="hj-val">${fmt(hargaAkhir)}</span></div>
+  `;
+
+  const ohBln=num('listrik')+num('sewa')+num('depresiasi')+num('overhead-lain');
+  const contrib=hargaAkhir-hpp;
+  const bepQty=contrib>0?Math.ceil(ohBln/contrib):null;
+  document.getElementById('bep-qty').textContent=bepQty?bepQty.toLocaleString('id-ID')+' pcs':'N/A';
+  document.getElementById('bep-rev').textContent=bepQty?fmt(bepQty*hargaAkhir):'N/A';
+  document.getElementById('bep-gm').textContent=gm+'%';
+}
+
+renderBahan();renderPembantu();renderTKL();calc();updateBadge();calcHarga();
+
+// Register Service Worker
+if('serviceWorker' in navigator){
+  window.addEventListener('load',()=>{
+    navigator.serviceWorker.register('sw.js')
+      .then(r=>console.log('SW registered'))
+      .catch(e=>console.log('SW error',e));
+  });
+}
+</script>
+</body>
+</html>
